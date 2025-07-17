@@ -1,1 +1,263 @@
 /* write css here */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Georgia", serif;
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.screen {
+  display: none;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  margin-top: 20px;
+}
+
+.screen.active {
+  display: block;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+h2 {
+  color: #34495e;
+  margin-bottom: 20px;
+  font-size: 1.8em;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+}
+
+select:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+input[type="number"] {
+  background-image: none;
+  padding-right: 12px;
+}
+
+.btn {
+  background-color: #3498db;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px 5px;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-success {
+  background-color: #27ae60;
+}
+
+.btn-success:hover {
+  background-color: #229954;
+}
+
+.btn-center {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.question-counter {
+  font-size: 18px;
+  color: #7f8c8d;
+  font-weight: bold;
+}
+
+.score-display {
+  font-size: 18px;
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.question-container {
+  margin-bottom: 30px;
+}
+
+.question-text {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  line-height: 1.5;
+}
+
+.options-container {
+  margin-bottom: 20px;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.option:hover {
+  background-color: #f8f9fa;
+  border-color: #3498db;
+}
+
+.option.correct {
+  background-color: #d4edda;
+  border-color: #27ae60;
+  color: #155724;
+}
+
+.option.incorrect {
+  background-color: #f8d7da;
+  border-color: #e74c3c;
+  color: #721c24;
+}
+
+.correct-answer {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #d1ecf1;
+  border-left: 4px solid #17a2b8;
+  border-radius: 4px;
+}
+
+.correct-answer strong {
+  color: #0c5460;
+}
+
+.quiz-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.results-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.final-score {
+  font-size: 3em;
+  color: #27ae60;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.score-message {
+  font-size: 1.2em;
+  color: #7f8c8d;
+  margin-bottom: 30px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 18px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  .screen {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .quiz-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .quiz-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
