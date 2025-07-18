@@ -1,10 +1,22 @@
-// write javascript herez
-// Global variables for basic state management
-// const api = https://opentdb.com/api.php?amount=3&category=25&difficulty=easy&type=multiple;
-
 const quizForm = document.querySelector("#quizForm");
+const currentScoreEle = document.getElementById("currentScore");
+const currentQuestionEle = document.querySelector("#currentQuestion");
+const totalQuestionsEle = document.getElementById("totalQuestions");
+const loader_layer = document.querySelector(".loader_layer");
+const questionTextEle = document.getElementById("questionText");
+const optionsContainer = document.getElementById("optionsContainer");
+const quitQuizEle = document.querySelector("#quitQuiz");
+const nextButtonEle = document.getElementById("nextButton");
+const playNewQuizEle = document.getElementById("playNewQuiz");
+const screensEle = document.querySelectorAll(".screen");
+const correctAnswerEle = document.getElementById("correctAnswer");
+const optionEle = document.querySelectorAll(".option");
+const correctAnswerTextEle = document.getElementById("correctAnswerText");
 
 quizForm.addEventListener("submit", startQuiz);
+quitQuizEle.addEventListener("click", quitQuiz);
+nextButtonEle.addEventListener("click", nextQuestion);
+playNewQuizEle.addEventListener("click", playNewQuiz);
 
 let currentQuestionIndex = 0;
 let totalQuestions = 10;
@@ -14,41 +26,46 @@ let correctAnswer = null;
 let fetchedQuestions = [];
 
 function showScreen(screenNumber) {
-  document.querySelectorAll(".screen").forEach((screen) => {
+  screensEle.forEach((screen) => {
     screen.classList.remove("active");
   });
   document.getElementById(`screen${screenNumber}`).classList.add("active");
 }
 
-function startQuiz(e) {
+function active_loader(status) {
+  if (status) {
+    loader_layer.classList.add("active");
+  } else {
+    loader_layer.classList.remove("active");
+  }
+}
+
+async function startQuiz(e) {
   e.preventDefault();
-  
+
   const formData = new FormData(quizForm);
   totalQuestions = Number(formData.get("amount"));
 
   const quizSetting = {
     questionAmount: totalQuestions,
-    questionCategory: Number(formData.get("category")),
+    questionCategory: formData.get("category"),
     questionDifficulty: formData.get("difficulty"),
     questionType: formData.get("type"),
   };
 
-  // Set total questions
-  document.getElementById("totalQuestions").textContent = totalQuestions;
+  totalQuestionsEle.textContent = totalQuestions;
 
   // Reset quiz state
   currentQuestionIndex = 0;
   currentScore = 0;
-  document.getElementById("currentScore").textContent = currentScore;
-  document.getElementById("currentQuestion").textContent = 1;
+  currentScoreEle.textContent = currentScore;
+  currentQuestionEle.textContent = 1;
 
-  // Here you would normally fetch questions from API
-  // For now, just show sample question
-
-  fetchQuestion(quizSetting);
+  active_loader(true);
+  await fetchQuestion(quizSetting);
   loadSampleQuestion();
+  active_loader(false);
 
-  // Show quiz screen
   showScreen(2);
 }
 
@@ -59,17 +76,29 @@ async function fetchQuestion({
   questionType,
 }) {
   try {
-    const API = `https://opentdb.com/api.php?amount=${questionAmount}&category=${questionCategory}&difficulty=${questionDifficulty}&type=${questionType}`;
+    let API = `https://opentdb.com/api.php?amount=${questionAmount}`;
+    // &category=${questionCategory}&difficulty=${questionDifficulty}&type=${questionType}`;
+    if (questionCategory !== "any") {
+      API += `&category=${questionCategory}`;
+    }
+    if (questionDifficulty !== "any") {
+      API += `&difficulty=${questionDifficulty}`;
+    }
+    if (questionType !== "any") {
+      API += `&type=${questionType}`;
+    }
 
     const question_res = await fetch(API);
     const data = await question_res.json();
-
+    console.log(data);
     if (data.response_code === 0) {
-      fetchedQuestions = data.results;
       console.log("Data fetching.");
-      // loadQuestion(); // Load first question after fetch
-    } else {
-      alert("Failed to fetch questions. Try different settings.");
+      fetchedQuestions = data.results;
+      console.log(data.results);
+    }
+
+    if (data?.results?.length === 0) {
+      alert("No more Question available for this setting.");
     }
   } catch (err) {
     console.error("Error fetching questions:", err);
@@ -77,48 +106,20 @@ async function fetchQuestion({
 }
 
 function loadSampleQuestion() {
-  // Sample question data (in real app, this would come from API)
-
-  // fetchQuestion();
-
-  // console.log(sampleQuestions2);
-  const sampleQuestions = [
-    {
-      question: "What is the capital of France?",
-      correct_answer: "Paris",
-      incorrect_answers: ["London", "Berlin", "Madrid"],
-    },
-    {
-      question: "Which planet is known as the Red Planet?",
-      correct_answer: "Mars",
-      incorrect_answers: ["Venus", "Jupiter", "Saturn"],
-    },
-    {
-      question: "What is 2 + 2?",
-      correct_answer: "4",
-      incorrect_answers: ["3", "5", "6"],
-    },
-  ];
-
-  // Use sample question or cycle through them
   const questionData =
-    sampleQuestions[currentQuestionIndex % sampleQuestions.length];
+    fetchedQuestions[currentQuestionIndex % fetchedQuestions.length];
+  console.log(questionData);
 
-  // Set question text
-  document.getElementById("questionText").innerHTML = questionData.question;
+  questionTextEle.innerHTML = questionData?.question;
 
-  // Store correct answer
   correctAnswer = questionData.correct_answer;
 
-  // Create options array and shuffle
   const options = [
     ...questionData.incorrect_answers,
     questionData.correct_answer,
   ];
-  shuffleArray(options);
 
-  // Create option buttons
-  const optionsContainer = document.getElementById("optionsContainer");
+  shuffleArray(options);
   optionsContainer.innerHTML = "";
 
   options.forEach((option, index) => {
@@ -130,8 +131,8 @@ function loadSampleQuestion() {
   });
 
   // Reset UI state
-  document.getElementById("correctAnswer").style.display = "none";
-  document.getElementById("nextButton").disabled = true;
+  correctAnswerEle.style.display = "none";
+  nextButtonEle.disabled = true;
   selectedAnswer = null;
 }
 
@@ -145,51 +146,45 @@ function shuffleArray(array) {
 function selectAnswer(answer, buttonElement) {
   // Prevent multiple selections
   if (selectedAnswer !== null) return;
-
   selectedAnswer = answer;
 
-  // Disable all option buttons
-  document.querySelectorAll(".option").forEach((btn) => {
+  optionEle.forEach((btn) => {
     btn.style.pointerEvents = "none";
   });
 
-  // Check if answer is correct
   if (answer === correctAnswer) {
     buttonElement.classList.add("correct");
     currentScore++;
-    document.getElementById("currentScore").textContent = currentScore;
+    currentScoreEle.textContent = currentScore;
   } else {
     buttonElement.classList.add("incorrect");
 
-    // Highlight correct answer
-    document.querySelectorAll(".option").forEach((btn) => {
+    optionEle.forEach((btn) => {
       if (btn.textContent === correctAnswer) {
         btn.classList.add("correct");
       }
     });
 
     // Show correct answer
-    document.getElementById("correctAnswerText").textContent = correctAnswer;
-    document.getElementById("correctAnswer").style.display = "block";
+    correctAnswerTextEle.textContent = correctAnswer;
+    correctAnswerEle.style.display = "block";
   }
 
   // Enable next button
-  document.getElementById("nextButton").disabled = false;
+  nextButtonEle.disabled = false;
 }
 
-function nextQuestion() {
+function nextQuestion(e) {
+  e.preventDefault();
   currentQuestionIndex++;
 
   if (currentQuestionIndex >= totalQuestions) {
-    // Quiz complete
     showResults();
   } else {
-    // Load next question
-    document.getElementById("currentQuestion").textContent =
-      currentQuestionIndex + 1;
+    currentQuestionEle.textContent = currentQuestionIndex + 1;
 
     // Re-enable option buttons
-    document.querySelectorAll(".option").forEach((btn) => {
+    optionEle.forEach((btn) => {
       btn.style.pointerEvents = "auto";
     });
 
@@ -197,33 +192,29 @@ function nextQuestion() {
   }
 }
 
-function quitQuiz() {
+function quitQuiz(e) {
+  e.preventDefault();
   if (confirm("Are you sure you want to quit the quiz?")) {
     showResults();
   }
 }
 
 function showResults() {
-  // Update final score display
   document.getElementById("finalScore").textContent = currentScore;
   document.getElementById(
     "scoreOutOf"
   ).textContent = `${currentScore} out of ${totalQuestions}`;
 
-  // Show results screen
   showScreen(3);
 }
 
-function playNewQuiz() {
-  // Reset to first screen
+function playNewQuiz(e) {
+  e.preventDefault();
   showScreen(1);
-
-  // Reset form values (optional)
-  document.getElementById("quizForm").reset();
+  quizForm.reset();
   document.getElementById("numQuestions").value = "10";
 }
 
-// Initialize the app
 document.addEventListener("DOMContentLoaded", function () {
   showScreen(1);
 });

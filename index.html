@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Take a fun and interactive quiz on various topics. Choose difficulty, category, and type."
+    />
+    <meta
+      name="keywords"
+      content="quiz app, online quiz, fun quiz, trivia, quiz game"
+    />
+    <meta name="author" content="Prince Bavishi" />
     <link rel="stylesheet" href="styles.css" />
     <script defer src="script.js"></script>
     <title>Quiz App</title>
@@ -15,6 +25,9 @@
     />
   </head>
   <body>
+    <div class="loader_layer">
+      <span class="loader"></span>
+    </div>
     <div class="container">
       <h1>Quiz Application</h1>
 
@@ -24,7 +37,7 @@
         <form id="quizForm">
           <div class="form-group">
             <label for="numQuestions">Number of Questions:</label>
-            <select id="numQuestions" name="amount" required>
+            <select id="numQuestions" name="amount">
               <option value="5">5</option>
               <option value="10" selected>10</option>
               <option value="15">15</option>
@@ -37,7 +50,7 @@
 
           <div class="form-group">
             <label for="category">Category:</label>
-            <select id="category" name="category" required>
+            <select id="category" name="category">
               <option value="any">Any Category</option>
               <option value="9">General Knowledge</option>
               <option value="10">Entertainment: Books</option>
@@ -68,8 +81,8 @@
 
           <div class="form-group">
             <label for="difficulty">Difficulty:</label>
-            <select id="difficulty" name="difficulty" required>
-              <option value="">Any Difficulty</option>
+            <select id="difficulty" name="difficulty">
+              <option value="any">Any Difficulty</option>
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
@@ -78,8 +91,8 @@
 
           <div class="form-group">
             <label for="type">Type:</label>
-            <select id="type" name="type" required>
-              <option value="">Any Type</option>
+            <select id="type" name="type">
+              <option value="any">Any Type</option>
               <option value="multiple">Multiple Choice</option>
               <option value="boolean">True / False</option>
             </select>
@@ -107,7 +120,7 @@
           <div class="question-text" id="questionText">Loading question...</div>
 
           <div class="options-container" id="optionsContainer">
-            <!-- Options will be populated here -->
+            <!-- Option -->
           </div>
 
           <div class="correct-answer" id="correctAnswer" style="display: none">
@@ -117,10 +130,8 @@
         </div>
 
         <div class="quiz-controls">
-          <button class="btn btn-danger" onclick="quitQuiz()">Quit Quiz</button>
-          <button class="btn" id="nextButton" onclick="nextQuestion()" disabled>
-            Next Question
-          </button>
+          <button class="btn btn-danger" id="quitQuiz">Quit Quiz</button>
+          <button class="btn" id="nextButton" disabled>Next Question</button>
         </div>
       </div>
 
@@ -133,7 +144,7 @@
             You scored <span id="scoreOutOf">0 out of 10</span>
           </div>
           <div class="btn-center">
-            <button class="btn btn-success" onclick="playNewQuiz()">
+            <button class="btn btn-success" id="playNewQuiz">
               Play New Quiz
             </button>
           </div>
