@@ -22,9 +22,7 @@ function showScreen(screenNumber) {
 
 function startQuiz(e) {
   e.preventDefault();
-
-  // Get form values
-  // const form = document.getElementById("quizForm");
+  
   const formData = new FormData(quizForm);
   totalQuestions = Number(formData.get("amount"));
 
@@ -68,7 +66,8 @@ async function fetchQuestion({
 
     if (data.response_code === 0) {
       fetchedQuestions = data.results;
-      loadQuestion(); // Load first question after fetch
+      console.log("Data fetching.");
+      // loadQuestion(); // Load first question after fetch
     } else {
       alert("Failed to fetch questions. Try different settings.");
     }
